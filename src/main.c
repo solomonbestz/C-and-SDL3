@@ -13,7 +13,7 @@ uint32_t frame_buffer[WIDTH * HEIGHT];
 typedef struct Circle {
     double x;
     double y;
-} player;
+} Circle;
 
 
 void clear_buffer(uint32_t *frame_buffer, uint32_t width, uint32_t height, uint32_t color)
@@ -25,17 +25,15 @@ void clear_buffer(uint32_t *frame_buffer, uint32_t width, uint32_t height, uint3
 }
 
 
-void create_circle(uint32_t *frame_buffer, uint32_t radius, uint32_t color, uint32_t *speed, player player)
+void create_circle_object(uint32_t *frame_buffer, uint32_t radius, uint32_t color, uint32_t *speed, Circle circle)
 {
-    *speed += 2;
-    player.y = 50 + *speed;
 
-    for (uint32_t y = 0; y < HEIGHT; y++)
+    for (uint32_t y = 0; y < (int)(circle.y + radius); y++)
     {
-        for(uint32_t x = 0; x < WIDTH; x++)
+        for(uint32_t x = 0; x < (int)(circle.x + radius); x++)
         {
-            int32_t change_in_x = x - player.x;
-            int32_t change_in_y = y - player.y;
+            int32_t change_in_x = x - circle.x;
+            int32_t change_in_y = y - circle.y;
 
             if((change_in_x * change_in_x) + (change_in_y * change_in_y) <= pow(radius, 2))
             {
@@ -60,8 +58,8 @@ int main(void)
     uint32_t last_counter = SDL_GetPerformanceCounter();
     double delta_time;
     
-    player p1 = {.x = 50, .y = 50};
-    player p2 = {.x = 300, .y = 50};
+    Circle c1 = {.x = 50, .y = 10};
+    Circle c2 = {.x = 300, .y = 50};
 
 
     if (!SDL_Init(SDL_INIT_VIDEO))
@@ -80,7 +78,8 @@ int main(void)
     }
 
     renderer = SDL_CreateRenderer(window, NULL);
-    printf("Renderer: %s\n", SDL_GetRendererName(renderer));
+    // printf("Renderer: %s\n", SDL_GetRendererName(renderer));
+
     if(renderer == NULL)
     {
         fprintf(stderr, "SDL_CreateRenderer failed: %s \n", SDL_GetError());
@@ -129,8 +128,8 @@ int main(void)
         // SDL_Log("Delta time: %f", delta_time); 
 
         clear_buffer(frame_buffer, WIDTH, HEIGHT, 0x000000);
-        create_circle(frame_buffer, 50, 0x00FF00, &speed, p1);
-        create_circle(frame_buffer, 50, 0xFF0000, &speed, p2);
+        create_circle_object(frame_buffer, 50, 0x0000FF, &speed, c1);
+        create_circle_object(frame_buffer, 50, 0xFF0000, &speed, c2);
 
 
         SDL_UpdateTexture(texture, NULL, frame_buffer, WIDTH * sizeof(uint32_t));
