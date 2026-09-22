@@ -1,48 +1,6 @@
-#include <SDL3/SDL.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <math.h>
-#include <stdio.h>
+#include "globals.h"
+#include "renderer.h"
 
-#define WIDTH 600
-#define HEIGHT 800
-
-
-uint32_t frame_buffer[WIDTH * HEIGHT];
-
-typedef struct Circle {
-    double x;
-    double y;
-} Circle;
-
-
-void clear_buffer(uint32_t *frame_buffer, uint32_t width, uint32_t height, uint32_t color)
-{
-    for(uint32_t i = 0; i < width * height; i++)
-    {
-        frame_buffer[i] = color;
-    }
-}
-
-
-void create_circle_object(uint32_t *frame_buffer, uint32_t radius, uint32_t color, uint32_t *speed, Circle circle)
-{
-
-    for (uint32_t y = 0; y < (int)(circle.y + radius); y++)
-    {
-        for(uint32_t x = 0; x < (int)(circle.x + radius); x++)
-        {
-            int32_t change_in_x = x - circle.x;
-            int32_t change_in_y = y - circle.y;
-
-            if((change_in_x * change_in_x) + (change_in_y * change_in_y) <= pow(radius, 2))
-            {
-                frame_buffer[y * WIDTH + x] = color;
-            }
-        }
-    }
-    
-}
 
 int main(void)
 {
@@ -58,8 +16,16 @@ int main(void)
     uint32_t last_counter = SDL_GetPerformanceCounter();
     double delta_time;
     
-    Circle c1 = {.x = 50, .y = 10};
-    Circle c2 = {.x = 300, .y = 50};
+    Circle c1 = {
+        .x = 50, 
+        .y = 10,
+        .radius = 20
+    };
+    Circle c2 = {
+        .x = 300, 
+        .y = 50,
+        .radius = 40
+    };
 
 
     if (!SDL_Init(SDL_INIT_VIDEO))
@@ -127,12 +93,12 @@ int main(void)
 
         // SDL_Log("Delta time: %f", delta_time); 
 
-        clear_buffer(frame_buffer, WIDTH, HEIGHT, 0x000000);
-        create_circle_object(frame_buffer, 50, 0x0000FF, &speed, c1);
-        create_circle_object(frame_buffer, 50, 0xFF0000, &speed, c2);
+        clearBuffer(gameFrameBuffer, WIDTH, HEIGHT, 0x000000);
+        createCircleObject(gameFrameBuffer, 0x0000FF, &c1);
+        createCircleObject(gameFrameBuffer, 0xFF0000, &c2);
 
 
-        SDL_UpdateTexture(texture, NULL, frame_buffer, WIDTH * sizeof(uint32_t));
+        SDL_UpdateTexture(texture, NULL, gameFrameBuffer, WIDTH * sizeof(uint32_t));
         SDL_RenderClear(renderer);
         SDL_RenderTexture(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
