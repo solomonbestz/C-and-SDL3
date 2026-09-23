@@ -13,11 +13,8 @@
 extern uint32_t gameFrameBuffer[WIDTH * HEIGHT];
 
 
-typedef struct Circle {
-    double x;
-    double y;
-    double radius;
-} Circle;
+
+
 
 
 
