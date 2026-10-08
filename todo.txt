@@ -2,7 +2,7 @@ Circle Struct (done)
 
 seperate functions (done)
 
-Optimization (Bounding Box)
+Optimization (Bounding Box) (done)
 
 Wall Collisions and Bouncing
 
