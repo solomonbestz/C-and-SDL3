@@ -8,7 +8,8 @@ typedef struct Velocity {
     float dx, dy;
 } Velocity;
 
-void moveObject(Velocity *vel, Circle *circleObject, double deltaTime);
+void moveObject(Velocity *vel, Circle *circleObject, float deltaTime);
 
+void CircleRectCollision(Circle *circleObject, Rect *rectObject, Velocity *vel);
 
 #endif

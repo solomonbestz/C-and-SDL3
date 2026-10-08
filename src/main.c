@@ -4,30 +4,34 @@
 
 SDL_Event event;
 uint8_t isRunning = 1;
+const float targetFrame = 1.0/60.0;
 
 int main(void)
 {
-    setbuf(stdout, NULL);
-
+    rendererInit();
     uint32_t lastCounter = SDL_GetPerformanceCounter();
-    double deltaTime;
+    float deltaTime;
     
     Circle c1 = {
         .x = 50, 
-        .y = 10,
+        .y = 0,
         .radius = 20,
-        .hasGravity = false
+        .restitution = 0.5,
+        .hasGravity = true
     };
     Circle c2 = {
         .x = 300, 
-        .y = 50,
+        .y = 0,
         .radius = 40,
+        .restitution = 0.5,
         .hasGravity = true
     };
 
     Rect r1 = {
-        .x = 100,
-        .y = 50
+        .x = 0,
+        .y = 750.0,
+        .width = WIDTH,
+        .height = 50
     };
 
     Rect r2 = {
@@ -35,27 +39,16 @@ int main(void)
         .y = 20
     };
 
-    Velocity vel = {
+    Velocity vel1 = {
         .dx = 0,
         .dy = 100
     };
 
-    // Vector3D cube = {
-    //     .x = 0.0f,
-    //     .y = 0.0f,
-    //     .z = 2.0f
-    // };
+    Velocity vel2 = {
+        .dx = 0,
+        .dy = 100
+    };
 
-
-    // Triangle3D triangle = {
-    //     .vertices = {
-    //         {.x = -100.0f, .y = 100.0f, .z = 300.f},
-    //         {.x = 100.0f, .y = 100.0f, .z = 400.0f},
-    //         {.x = 0.0f, .y = -100.0f, .z = 300.0f}
-    //     }
-    // };
-    
-    rendererInit();
 
     while (isRunning)
     {
@@ -70,7 +63,7 @@ int main(void)
             }
         }
 
-        deltaTime = (double)(currentCounter - lastCounter) / (double)SDL_GetPerformanceFrequency();
+        deltaTime = (float)(currentCounter - lastCounter) / (float)SDL_GetPerformanceFrequency();
 
         lastCounter = currentCounter;
 
@@ -81,11 +74,16 @@ int main(void)
         drawCircle(gameFrameBuffer, 0x0000FF, &c1);
         drawCircle(gameFrameBuffer, 0xFF0000, &c2);
         drawRect(gameFrameBuffer, 0x00FF00, &r1);
-        moveObject(&vel, &c1, deltaTime);
-        moveObject(&vel, &c2, deltaTime);
+        
+        moveObject(&vel1, &c1, deltaTime);
+        moveObject(&vel2, &c2, deltaTime);
+
+        CircleRectCollision(&c1, &r1, &vel1);
+        CircleRectCollision(&c2, &r1, &vel2);
 
         // drawRect(gameFrameBuffer, 0x3F3F3F, &r2);
         rendererUpdate(gameFrameBuffer);
+        frameRatePerSeconds(deltaTime, targetFrame);
     }
 
     rendererDestroy();
