@@ -140,3 +140,69 @@ void drawRect(uint32_t *frameBuffer, uint32_t color, Rect *rect)
         }
     }
 }
+
+void load_image_pixels(const char *filePath, Texture *tex)
+{
+    int width, height, channels;
+
+    int desired_channels = 4;
+
+    unsigned char *pixels_data = stbi_load(filePath, &width, &height, &channels, desired_channels);
+
+    if(pixels_data == NULL)
+    {
+        SDL_Log("Failed to load image at %s\n", filePath);
+        return;
+    }
+
+    // SDL_Log("Image Loaded: %dx%d (%d channels)\n", width, height, channels);
+
+
+    tex->width = width;
+    tex->height = height;
+
+    tex->pixels = (uint32_t*)pixels_data;
+
+    
+}
+
+
+void drawTexturedRect(uint32_t *frameBuffer, Rect *rect, Texture *tex)
+{
+    int minX = (int)rect->x;
+    int minY = (int)rect->y;
+
+    int maxX = minX + rect->width;
+    int maxY = minY + rect->height;
+
+    if (minX < 0) minX = 0;
+    if (minY < 0) minY = 0;
+    if (maxX >= WIDTH) maxX = WIDTH - 1;
+    if (maxY >= HEIGHT) maxY = HEIGHT - 1;
+
+    for(int y = minY; y <= maxY; y++)
+    {
+        float v = (float)(y - rect->y) / rect->height;
+        int texY = (int)(v * tex->height);
+
+        for (int x = minX; x <= maxX; x++)
+        {
+            float u = (float)(x - rect->x) / rect->width;
+            int texX = (int)(u * tex->width);
+
+            if(texX >= tex->width) texX = tex->width - 1;
+            if(texY >= tex->height) texY = tex->height - 1;
+
+            uint32_t color = tex->pixels[(texY * tex->width) + texX];
+
+            if((color & 0xFF000000) != 0)
+            {
+                frameBuffer[(y * WIDTH) + x] = color;
+            }
+        }
+    }
+
+    stbi_image_free(tex->pixels);
+    tex->pixels = NULL;
+
+}

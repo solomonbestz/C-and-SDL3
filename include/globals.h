@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include <stb/stb_image.h>
+
 #define WIDTH 1280
 #define HEIGHT 800
 

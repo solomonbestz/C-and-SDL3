@@ -21,6 +21,12 @@ typedef struct Rect {
     float restitution;
 } Rect;
 
+typedef struct Texture {
+    uint32_t *pixels;
+    int width;
+    int height;
+} Texture;
+
 
 int rendererInit();
 
@@ -35,5 +41,11 @@ void clearBuffer(uint32_t *frameBuffer, size_t width, size_t height, uint32_t co
 void drawCircle(uint32_t *frameBuffer, uint32_t color, Circle *circle);
 
 void drawRect(uint32_t *frameBuffer, uint32_t color, Rect *rect);
+
+void load_image_pixels(const char *filePath, Texture *tex);
+
+void drawTexturedRect(uint32_t *frameBuffer, Rect *rect, Texture *tex);
+
+
 
 #endif

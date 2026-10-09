@@ -4,7 +4,7 @@ seperate functions (done)
 
 Optimization (Bounding Box) (done)
 
-Wall Collisions and Bouncing
+Wall Collisions and Bouncing (done)
 
 Interactive Inputs
 
